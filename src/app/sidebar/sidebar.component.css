@@ -1,0 +1,17 @@
+/* Estilo específico para el botón con la clase 'custom-button' */
+.custom-button {
+  background: transparent; /* Elimina el fondo */
+  border: none; /* Elimina el borde predeterminado */
+}
+
+/* Cambia el color del ícono si es necesario */
+.custom-button .p-button-icon {
+  color: black; /* Cambia el color del ícono */
+}
+
+/* Elimina la sombra y el contorno en el enfoque para el botón específico */
+.custom-button:focus, .custom-button:active {
+  box-shadow: none; /* Elimina el efecto de sombra */
+  outline: none; /* Elimina el contorno de enfoque */
+}
+
