@@ -1,3 +1,70 @@
+/* Estilo para el sidebar */
+.p-sidebar {
+  width: 250px; /* Ajusta el ancho del sidebar según sea necesario */
+}
+
+/* Estilo para el encabezado del sidebar */
+.p-sidebar h4 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 10px;
+  background-color: #007bff; /* Color de fondo del encabezado */
+  color: #fff; /* Color del texto */
+  font-size: 16px; /* Tamaño de fuente */
+}
+
+/* Estilo para el contenedor de las imágenes en el encabezado */
+.header-icons {
+  display: flex;
+  justify-content: space-between; /* Distribuye las imágenes a lo largo del espacio disponible */
+  flex: 1; /* Permite que el contenedor ocupe todo el espacio disponible en el encabezado */
+}
+
+/* Estilo para las imágenes en el encabezado del sidebar */
+.header-icons img {
+  width: 40px;
+  height: 40px;
+}
+
+/* Estilo para la lista del menú */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Estilo para los ítems del menú */
+.menu-item {
+  background-color: transparent; /* Fondo transparente */
+  color: #b0b0b0; /* Color del texto en gris claro */
+  padding: 10px 15px; /* Espaciado interno */
+  margin: 5px 0; /* Espaciado entre elementos */
+  border: 1px solid #b0b0b0; /* Contorno gris claro */
+  border-radius: 4px; /* Bordes redondeados */
+  cursor: pointer; /* Cambia el cursor a una mano */
+  transition: background-color 0.3s, color 0.3s; /* Transición suave */
+  text-align: center; /* Centra el texto */
+}
+
+/* Estilo para los ítems del menú al pasar el ratón */
+.menu-item:hover {
+  background-color: #e0e0e0; /* Color de fondo al pasar el ratón */
+  color: #333; /* Color del texto al pasar el ratón */
+}
+
+/* Estilo para los ítems del menú cuando se hace clic */
+.menu-item:active {
+  background-color: #d0d0d0; /* Color de fondo cuando se hace clic */
+}
+
+/* Estilo para el ítem activo */
+.menu-item.active {
+  background-color: #007bff; /* Color de fondo del ítem activo */
+  color: #fff; /* Color del texto del ítem activo */
+}
+
 /* Estilo específico para el botón con la clase 'custom-button' */
 .custom-button {
   background: transparent; /* Elimina el fondo */
@@ -14,4 +81,3 @@
   box-shadow: none; /* Elimina el efecto de sombra */
   outline: none; /* Elimina el contorno de enfoque */
 }
-
