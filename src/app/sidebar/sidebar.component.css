@@ -38,10 +38,10 @@
 /* Estilo para los ítems del menú */
 .menu-item {
   background-color: transparent; /* Fondo transparente */
-  color: #b0b0b0; /* Color del texto en gris claro */
+  color: #2c2c2c; /* Color del texto en gris muy oscuro */
   padding: 10px 15px; /* Espaciado interno */
   margin: 5px 0; /* Espaciado entre elementos */
-  border: 1px solid #b0b0b0; /* Contorno gris claro */
+  border: 1px solid #2c2c2c; /* Contorno gris muy oscuro */
   border-radius: 4px; /* Bordes redondeados */
   cursor: pointer; /* Cambia el cursor a una mano */
   transition: background-color 0.3s, color 0.3s; /* Transición suave */
@@ -50,13 +50,13 @@
 
 /* Estilo para los ítems del menú al pasar el ratón */
 .menu-item:hover {
-  background-color: #e0e0e0; /* Color de fondo al pasar el ratón */
-  color: #333; /* Color del texto al pasar el ratón */
+  background-color: #b3b3b3; /* Color de fondo al pasar el ratón */
+  color: #1a1a1a; /* Color del texto al pasar el ratón */
 }
 
 /* Estilo para los ítems del menú cuando se hace clic */
 .menu-item:active {
-  background-color: #d0d0d0; /* Color de fondo cuando se hace clic */
+  background-color: #999999; /* Color de fondo cuando se hace clic */
 }
 
 /* Estilo para el ítem activo */
