@@ -1,29 +1,30 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router'; // Importa Router para la navegación
-import { RouterOutlet } from '@angular/router';
+// src/app/app.component.ts
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { GrandesPerdidasComponent } from './grandes-perdidas/grandes-perdidas.component';
-import { OeeJphComponent } from './oee-jph/oee-jph.component';
-import { TiempoCicloEstacionComponent } from './tiempo-ciclo-estacion/tiempo-ciclo-estacion.component';
-import { TiempoCicloRobotsComponent } from './tiempo-ciclo-robots/tiempo-ciclo-robots.component';
-import { TiempoLimadoComponent } from './tiempo-limado/tiempo-limado.component';
-import { TiempoProductivoComponent } from './tiempo-productivo/tiempo-productivo.component';
+import { AuthService } from './services/auth.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent,
-    GrandesPerdidasComponent, OeeJphComponent,
-    TiempoCicloEstacionComponent, TiempoCicloRobotsComponent,
-    TiempoLimadoComponent, TiempoProductivoComponent],
+  imports: [SidebarComponent,DashboardComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public title: string = 'P13C';
   sidebarVisible: boolean = false; // Controla la visibilidad del sidebar
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    // Verificar la autenticación al iniciar el componente
+    // if (!this.authService.isLoggedIn() && this.router.url !== '/login') {
+    //   // Redirigir al usuario al login si no está autenticado
+    //   this.router.navigate(['/login']);
+    // }
+  }
 
   // Método para navegar a la ruta proporcionada y ocultar el sidebar
   navigateTo(route: string): void {
@@ -31,3 +32,4 @@ export class AppComponent {
     this.router.navigate([route]); // Navega a la ruta proporcionada
   }
 }
+
