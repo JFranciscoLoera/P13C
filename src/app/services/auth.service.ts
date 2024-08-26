@@ -34,11 +34,12 @@ export class AuthService {
   }
 
   private checkSessionTimeout() {
+    /*
     setInterval(() => {
       if (Date.now() - this.lastActivity > this.SESSION_TIMEOUT) {
         this.logout();
       }
-    }, 1000);
+    }, 1000);*/
   }
 
   updateActivity() {

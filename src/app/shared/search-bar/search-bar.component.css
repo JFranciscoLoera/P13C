@@ -1,0 +1,61 @@
+/* Contenedor de la tarjeta */
+.search-bar-container {
+  border: 1px solid #ddd; /* Borde gris claro */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 16px; /* Espaciado interno */
+  background-color: #f9f9f9; /* Color de fondo */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  width: calc(100% - 32px); /* Ocupa todo el ancho disponible menos el margen */
+  box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+  margin: 16px auto; /* Margen vertical de 16px y centrado horizontal */
+}
+
+/* Contenedor de los campos de formulario en fila */
+.search-bar-form {
+  display: flex;
+  flex-wrap: wrap; /* Ajustar a nuevas líneas si el espacio es insuficiente */
+  gap: 16px; /* Espacio entre elementos */
+  align-items: center; /* Alinea todos los elementos al centro verticalmente */
+}
+
+/* Cada elemento del formulario */
+.search-bar-form div {
+  flex: 1; /* Ocupa el espacio disponible */
+  min-width: 150px; /* Ancho mínimo */
+}
+
+/* Estilo para los inputs y selects */
+.search-bar-form input,
+.search-bar-form select {
+  width: 100%; /* Ocupa todo el ancho disponible */
+  padding: 8px; /* Espaciado interno */
+  border: 1px solid #ccc; /* Borde gris */
+  border-radius: 4px; /* Bordes redondeados */
+}
+
+/* Botón de búsqueda */
+.search-bar-form button {
+  padding: 8px 16px; /* Espaciado interno */
+  background-color: #333; /* Color de fondo gris oscuro */
+  color: #fff; /* Color del texto blanco */
+  border: 1px solid #333; /* Borde gris oscuro */
+  border-radius: 4px; /* Bordes redondeados */
+  cursor: pointer; /* Cursor de mano */
+  font-size: 16px; /* Tamaño de la fuente */
+  align-self: center; /* Alinea el botón al centro verticalmente */
+  margin-top: 30px; /* Ajusta la posición vertical del botón */
+  display: block; /* Asegura que el botón se muestre como bloque */
+  width: auto; /* Ajusta el ancho del botón automáticamente */
+}
+
+.search-bar-form button:hover {
+  background-color: #555; /* Color de fondo gris medio en hover */
+  border-color: #555; /* Color del borde gris medio en hover */
+}
+
+/* Estilo para el mensaje de error */
+.error-message {
+  color: red; /* Color del texto de error */
+  font-size: 14px; /* Tamaño de la fuente del mensaje de error */
+  margin-top: 30px; /* Espacio superior del mensaje de error */
+}

@@ -1,9 +1,10 @@
 // src/app/app.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { AuthService } from './services/auth.service';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from './shared/dashboard/dashboard.component';
+
 
 @Component({
   selector: 'app-root',
