@@ -16,3 +16,6 @@
   outline: none; /* Elimina el contorno de enfoque */
 }
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
