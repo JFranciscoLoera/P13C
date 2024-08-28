@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { ConsultaService } from '../../services/consulta.service';
+import { MetalLineFailureData } from '../../interfaces/metal-line-failiure-data';
 
 @Component({
   selector: 'app-fallas-metal-line',
@@ -11,10 +13,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 export class FallasMetalLineComponent {
   @ViewChild('searchForm', { static: true }) searchForm!: NgForm;
-  isFormValid: boolean = false;
-  dateError: boolean = false; // Nueva variable para el error de fecha
+  public isFormValid: boolean = false;
+  public dateError: boolean = false; // Nueva variable para el error de fecha
+  public metalLineFailuresList: MetalLineFailureData[] = []; // Arreglo para almacenar los datos de fallas
 
-  constructor() { }
+  constructor(private consultaService: ConsultaService) { }
 
   ngOnInit(): void {
     // Suscribirse a los cambios en el estado del formulario
@@ -39,8 +42,20 @@ export class FallasMetalLineComponent {
   // Método para manejar el envío del formulario
   onSubmit(): void {
     if (this.isFormValid) {
-      console.log('Formulario enviado');
-      // Aquí manejas el envío del formulario
+      const startDate = this.searchForm.value.startDate;
+      const endDate = this.searchForm.value.endDate;
+
+      console.log('Formulario enviado', { startDate, endDate });
+
+      this.consultaService.getMetalLineFailureData(startDate, endDate).subscribe(
+        (data: MetalLineFailureData[]) => {
+          this.metalLineFailuresList = data; // Asigna los datos al arreglo
+          console.log('Datos recibidos:', this.metalLineFailuresList);
+        },
+        (error) => {
+          console.error('Error al obtener los datos:', error);
+        }
+      );
     }
   }
 }
