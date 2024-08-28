@@ -3,11 +3,12 @@ import { Component, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ConsultaService } from '../../services/consulta.service';
 import { MetalLineFailureData } from '../../interfaces/metal-line-failiure-data';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-fallas-metal-line',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,NgxSpinnerModule],
   templateUrl: './fallas-metal-line.component.html',
   styleUrls: ['./fallas-metal-line.component.css']
 })
@@ -17,7 +18,10 @@ export class FallasMetalLineComponent {
   public dateError: boolean = false; // Nueva variable para el error de fecha
   public metalLineFailuresList: MetalLineFailureData[] = []; // Arreglo para almacenar los datos de fallas
 
-  constructor(private consultaService: ConsultaService) { }
+  constructor(
+    private consultaService: ConsultaService,
+    private spinner: NgxSpinnerService
+    ) { }
 
   ngOnInit(): void {
     // Suscribirse a los cambios en el estado del formulario
@@ -46,13 +50,15 @@ export class FallasMetalLineComponent {
       const endDate = this.searchForm.value.endDate;
 
       console.log('Formulario enviado', { startDate, endDate });
-
+      this.spinner.show();
       this.consultaService.getMetalLineFailureData(startDate, endDate).subscribe(
         (data: MetalLineFailureData[]) => {
+          this.spinner.hide();
           this.metalLineFailuresList = data; // Asigna los datos al arreglo
           console.log('Datos recibidos:', this.metalLineFailuresList);
         },
         (error) => {
+          this.spinner.hide();
           console.error('Error al obtener los datos:', error);
         }
       );
