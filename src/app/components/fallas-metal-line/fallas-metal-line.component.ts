@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ConsultaService } from '../../services/consulta.service';
 import { MetalLineFailureData } from '../../interfaces/metal-line-failiure-data';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-fallas-metal-line',
@@ -54,11 +55,24 @@ export class FallasMetalLineComponent {
       this.consultaService.getMetalLineFailureData(startDate, endDate).subscribe(
         (data: MetalLineFailureData[]) => {
           this.spinner.hide();
-          this.metalLineFailuresList = data; // Asigna los datos al arreglo
+          if(data.length==0){
+            Swal.fire({
+              title: "Lo sientimos",
+              text: "Sin resultados en el rango seleccionado",
+              icon: "error"
+            });
+          }else{
+            this.metalLineFailuresList = data;
+          } // Asigna los datos al arreglo
           console.log('Datos recibidos:', this.metalLineFailuresList);
         },
         (error) => {
           this.spinner.hide();
+          Swal.fire({
+            title: "Server Error",
+            text: "Error al obtener respuesta Fallos Metal Line",
+            icon: "error"
+          });
           console.error('Error al obtener los datos:', error);
         }
       );
