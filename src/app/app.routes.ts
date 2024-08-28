@@ -9,6 +9,7 @@ import { AuthGuard } from './guards/auth.guard'; // Importa tu guard de autentic
 import { GrandesPerdidasComponent } from './components/grandes-perdidas/grandes-perdidas.component';
 import { DashboardComponent } from './shared/dashboard/dashboard.component';
 import { SearchBarComponent } from './shared/search-bar/search-bar.component';
+import { FallasMetalLineComponent } from './components/fallas-metal-line/fallas-metal-line.component';
 
 
 export const routes: Routes = [
@@ -20,5 +21,6 @@ export const routes: Routes = [
   { path: 'oee-jph', component: OeeJphComponent },
   { path: 'tiempo-ciclo-estacion', component: TiempoCicloEstacionComponent },
   { path: 'tiempo-productivo', component: TiempoProductivoComponent },
-  { path: 'tiempo-productivo', component: SearchBarComponent }
+  { path: 'tiempo-productivo', component: SearchBarComponent },
+  { path: 'fallas-metal', component: FallasMetalLineComponent }
 ];

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
@@ -15,6 +15,7 @@ export class SearchBarComponent implements OnInit {
   shifts = ['Turno 1', 'Turno 2', 'Turno 3']; // Lista de turnos
   isFormValid: boolean = false;
   dateError: boolean = false; // Nueva variable para el error de fecha
+  @Output() searchParamsChanged = new EventEmitter<any>();
 
   constructor() { }
 
@@ -41,8 +42,14 @@ export class SearchBarComponent implements OnInit {
   // Método para manejar el envío del formulario
   onSubmit(): void {
     if (this.isFormValid) {
+      const params = {
+        startDate: this.searchForm.value.startDate,
+        endDate: this.searchForm.value.endDate,
+        line: this.searchForm.value.line,
+        shift: this.searchForm.value.shift
+      };
+      this.searchParamsChanged.emit(params);
       console.log('Formulario enviado');
-      // Aquí manejas el envío del formulario
     }
   }
 }

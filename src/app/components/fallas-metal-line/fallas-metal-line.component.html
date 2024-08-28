@@ -1,2 +1,20 @@
-<app-search-bar></app-search-bar>
-<p>fallas-metal-line works!</p>
+<div class="search-bar-container">
+  <form (ngSubmit)="onSubmit()" #searchForm="ngForm" (ngModelChange)="checkFormValidity(searchForm)">
+    <div class="search-bar-form">
+      <div>
+        <label for="startDate">Fecha Inicio:</label>
+        <input type="date" id="startDate" name="startDate" ngModel required />
+      </div>
+      <div>
+        <label for="endDate">Fecha Fin:</label>
+        <input type="date" id="endDate" name="endDate" ngModel required />
+      </div>
+      <!-- El botón se muestra solo si el formulario es válido -->
+      <button *ngIf="isFormValid" type="submit">Buscar</button>
+      <!-- Mensaje de error de fecha -->
+      <div *ngIf="dateError" class="error-message">La fecha de inicio no puede ser posterior a la fecha de fin.</div>
+    </div>
+  </form>
+</div>
+
+<p>METAL LINE FALLAS</p>
