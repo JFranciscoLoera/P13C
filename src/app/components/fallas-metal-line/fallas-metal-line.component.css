@@ -103,3 +103,15 @@ td,th {
   text-align: center; /* Alineación horizontal centrada */
   vertical-align: middle; /* Alineación vertical centrada */
 }
+
+.paginator-container {
+  display: flex;
+  align-items: center; /* Centra verticalmente el botón y el paginador */
+  justify-content: space-between; /* Coloca el botón y el paginador en extremos opuestos */
+  margin-top: 0px; /* Espacio superior para separar del contenido anterior */
+}
+
+.paginator-container button {
+  margin-right: auto; /* Alinea el botón a la izquierda */
+  margin-left: 10px;
+}

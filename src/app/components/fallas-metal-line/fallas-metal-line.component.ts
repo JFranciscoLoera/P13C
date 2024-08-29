@@ -122,6 +122,7 @@ export class FallasMetalLineComponent implements OnInit {
       this.consultaService.getMetalLineFailureData(startDate, endDate).subscribe(
         (data: MetalLineFailureData[]) => {
           this.spinner.hide();
+          this.dataSource=new MatTableDataSource<any>;
           if (data.length === 0) {
             Swal.fire({
               title: "Lo sentimos",
@@ -132,7 +133,6 @@ export class FallasMetalLineComponent implements OnInit {
             this.dataSource = new MatTableDataSource(data);
             this.dataSource.paginator = this.paginator;
             this.blnShowTable = true;
-            this.createXlsFile();
           }
         },
         (error) => {

@@ -104,4 +104,9 @@
     </div>
   </mat-card-content>
 </mat-card>
-<mat-paginator [hidden]="dataSource.data.length<=0" class="fixed" [pageSizeOptions]="[6,12,20,30]" showFirstLastButtons></mat-paginator>
+
+<!-- Contenedor para el paginador y el botón de descarga -->
+<div class="paginator-container" [hidden]="dataSource.data.length <= 0">
+  <button class="btn btn-dark" mat-button (click)="createXlsFile()">Descargar XLSX</button> <!-- Botón de descarga -->
+  <mat-paginator class="fixed" [pageSizeOptions]="[6, 12, 20, 30]" showFirstLastButtons></mat-paginator>
+</div>
