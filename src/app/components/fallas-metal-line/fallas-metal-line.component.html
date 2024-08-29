@@ -3,11 +3,11 @@
     <div class="search-bar-form">
       <div>
         <label for="startDate">Fecha Inicio:</label>
-        <input type="date" id="startDate" name="startDate" ngModel required />
+        <input type="date" id="startDate" name="startDate" ngModel required [max]="strDateMax"/>
       </div>
       <div>
         <label for="endDate">Fecha Fin:</label>
-        <input type="date" id="endDate" name="endDate" ngModel required />
+        <input type="date" id="endDate" name="endDate" ngModel required [max]="strDateMax"/>
       </div>
       <!-- El botón se muestra solo si el formulario es válido -->
       <button *ngIf="isFormValid" type="submit">Buscar</button>
@@ -32,7 +32,7 @@
 </ngx-spinner>
 
 <!-- Tabla de Angular Material -->
-<mat-card>
+<mat-card [hidden]="dataSource.data.length<=0">
   <mat-card-content>
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" matSort>
@@ -101,12 +101,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-      <!--<mat-paginator
-        [pageSize]="10"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        showFirstLastButtons
-      ></mat-paginator>-->
     </div>
   </mat-card-content>
 </mat-card>
-<mat-paginator class="fixed" [pageSizeOptions]="[10,25,50,100]" showFirstLastButtons></mat-paginator>
+<mat-paginator [hidden]="dataSource.data.length<=0" class="fixed" [pageSizeOptions]="[6,12,20,30]" showFirstLastButtons></mat-paginator>

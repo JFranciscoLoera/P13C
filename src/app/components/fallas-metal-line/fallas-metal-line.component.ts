@@ -29,6 +29,7 @@ export class FallasMetalLineComponent implements OnInit {
      'from_Time', 'to_Time', 'failure_Time', 'cause_No', 'comment_Data'];
   dataSource: MatTableDataSource<MetalLineFailureData>= new MatTableDataSource<any>;
   @ViewChild(MatPaginator) paginator2!: MatPaginator;
+  public strDateMax: string='';
 
   constructor(
     private consultaService: ConsultaService,
@@ -36,9 +37,23 @@ export class FallasMetalLineComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.setDateLimit();
     this.searchForm.statusChanges?.subscribe(() => {
       this.checkFormValidity(this.searchForm);
     });
+  }
+
+  public setDateLimit():void{
+    const currentDate = new Date();
+    let year = currentDate.getFullYear();
+    let month = currentDate.getMonth() + 1; // Los meses en JS son de 0-11
+    let day = currentDate.getDate();
+
+    // Formatear el mes y el día para asegurarse de que sean de dos dígitos
+    const monthStr = month < 10 ? '0' + month : month.toString();
+    const dayStr = day < 10 ? '0' + day : day.toString();
+
+    this.strDateMax = `${year}-${monthStr}-${dayStr}`;
   }
 
   checkFormValidity(form: NgForm): void {
