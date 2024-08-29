@@ -1,75 +1,81 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ConsultaService } from '../../services/consulta.service';
 import { MetalLineFailureData } from '../../interfaces/metal-line-failiure-data';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-fallas-metal-line',
   standalone: true,
-  imports: [CommonModule, FormsModule,NgxSpinnerModule],
+  imports: [CommonModule, FormsModule, NgxSpinnerModule, MatTableModule, MatSortModule, MatPaginatorModule, MatCardModule],
   templateUrl: './fallas-metal-line.component.html',
   styleUrls: ['./fallas-metal-line.component.css']
 })
-export class FallasMetalLineComponent {
+export class FallasMetalLineComponent implements OnInit {
   @ViewChild('searchForm', { static: true }) searchForm!: NgForm;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   public isFormValid: boolean = false;
-  public dateError: boolean = false; // Nueva variable para el error de fecha
-  public metalLineFailuresList: MetalLineFailureData[] = []; // Arreglo para almacenar los datos de fallas
+  public dateError: boolean = false;
+  public blnShowTable:boolean=false;
+
+  public displayedColumns: string[] = ['id', 'shop_Name', 'failure_Date', 'failure_Shift', 'failure_No',
+     'from_Time', 'to_Time', 'failure_Time', 'cause_No', 'comment_Data'];
+  dataSource: MatTableDataSource<MetalLineFailureData>= new MatTableDataSource<any>;
+  @ViewChild(MatPaginator) paginator2!: MatPaginator;
 
   constructor(
     private consultaService: ConsultaService,
     private spinner: NgxSpinnerService
-    ) { }
+  ) { }
 
   ngOnInit(): void {
-    // Suscribirse a los cambios en el estado del formulario
     this.searchForm.statusChanges?.subscribe(() => {
       this.checkFormValidity(this.searchForm);
     });
   }
 
-  // Método para verificar la validez del formulario y la validación personalizada de fechas
   checkFormValidity(form: NgForm): void {
-    const formValue = form.value || {}; // Asegura que form.value no sea null o undefined
-    const startDate: string = formValue.startDate || ''; // Manejo de fecha de inicio
-    const endDate: string = formValue.endDate || ''; // Manejo de fecha de fin
+    const formValue = form.value || {};
+    const startDate: string = formValue.startDate || '';
+    const endDate: string = formValue.endDate || '';
 
-    // Validar que la fecha de inicio no sea mayor que la fecha de fin
     this.dateError = !!(startDate && endDate && new Date(startDate) > new Date(endDate));
-    // Usar valores predeterminados para asegurar que isFormValid sea siempre booleano
     const isValid = form.valid !== null ? form.valid : false;
     this.isFormValid = isValid && !this.dateError;
   }
 
-  // Método para manejar el envío del formulario
   onSubmit(): void {
     if (this.isFormValid) {
       const startDate = this.searchForm.value.startDate;
       const endDate = this.searchForm.value.endDate;
-
-      console.log('Formulario enviado', { startDate, endDate });
+      this.blnShowTable=false;
       this.spinner.show();
       this.consultaService.getMetalLineFailureData(startDate, endDate).subscribe(
         (data: MetalLineFailureData[]) => {
           this.spinner.hide();
-          if(data.length==0){
+          if (data.length === 0) {
             Swal.fire({
-              title: "Lo sientimos",
+              title: "Lo sentimos",
               text: "Sin resultados en el rango seleccionado",
               icon: "error"
             });
-          }else{
-            this.metalLineFailuresList = data;
-          } // Asigna los datos al arreglo
-          console.log('Datos recibidos:', this.metalLineFailuresList);
+          } else {
+            this.dataSource = new MatTableDataSource(data);
+            this.dataSource.paginator = this.paginator;
+            this.blnShowTable=true;
+          }
         },
         (error) => {
           this.spinner.hide();
           Swal.fire({
-            title: "Server Error",
+            title: "Error en el servidor",
             text: "Error al obtener respuesta Fallos Metal Line",
             icon: "error"
           });
