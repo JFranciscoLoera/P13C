@@ -115,3 +115,9 @@ td,th {
   margin-right: auto; /* Alinea el botón a la izquierda */
   margin-left: 10px;
 }
+
+/* downtime.component.css */
+canvas {
+  width: 100% !important;
+  height: auto !important;
+}

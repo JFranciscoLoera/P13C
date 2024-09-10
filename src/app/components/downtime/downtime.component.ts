@@ -8,32 +8,39 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { LossesData } from '../../interfaces/losses-data';
 import { BaseChartDirective } from 'ng2-charts';
+import { ChartOptions, ChartTypeRegistry, ChartData } from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 
-
-
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-downtime',
   standalone: true,
-  imports: [SidebarComponent, SearchBarComponent, CommonModule, FormsModule,BaseChartDirective],
+  imports: [SidebarComponent, SearchBarComponent, CommonModule, FormsModule, BaseChartDirective],
   templateUrl: './downtime.component.html',
-  styleUrl: './downtime.component.css'
+  styleUrls: ['./downtime.component.css']
 })
-
-
-
-
-
 export class DowntimeComponent {
-
   public strDateMax: string = '';
   @ViewChild('searchForm', { static: true }) searchForm!: NgForm;
-  public lines: string[]  = ['Línea 1', 'Línea 2', 'Línea 3']; // Lista de líneas
-  shifts = ['Turno 1', 'Turno 2', 'Turno 3']; // Lista de turnos
+  public lines: string[] = ['Línea 1', 'Línea 2', 'Línea 3'];
+  shifts = ['Turno 1', 'Turno 2', 'Turno 3'];
   public isFormValid: boolean = false;
   public dateError: boolean = false;
-  public lossesData:LossesData[]=[];
+  public lossesData: LossesData[] = [];
 
+  public barChartOptions: ChartOptions<'bar'> = {
+    responsive: true,
+  };
+  public barChartLabels: string[] = [];
+  public barChartData: ChartData<'bar'> = {
+    labels: this.barChartLabels,
+    datasets: [
+      { data: [], label: 'Series A' },
+      { data: [], label: 'Series B' }
+    ]
+  };
+  public barChartType: keyof ChartTypeRegistry = 'bar';
 
   constructor(
     private consultaService: ConsultaService,
@@ -46,6 +53,7 @@ export class DowntimeComponent {
     this.searchForm.statusChanges?.subscribe(() => {
       this.checkFormValidity(this.searchForm);
     });
+    this.updateChartData(); // Inicializa el gráfico con datos de ejemplo
   }
 
   checkFormValidity(form: NgForm): void {
@@ -61,10 +69,9 @@ export class DowntimeComponent {
   public setDateLimit(): void {
     const currentDate = new Date();
     let year = currentDate.getFullYear();
-    let month = currentDate.getMonth() + 1; // Los meses en JS son de 0-11
+    let month = currentDate.getMonth() + 1;
     let day = currentDate.getDate();
 
-    // Formatear el mes y el día para asegurarse de que sean de dos dígitos
     const monthStr = month < 10 ? '0' + month : month.toString();
     const dayStr = day < 10 ? '0' + day : day.toString();
 
@@ -83,9 +90,9 @@ export class DowntimeComponent {
             icon: "error"
           });
         } else {
-          this.lines= [];
+          this.lines = [];
           data.forEach((element: any) => {
-            this.lines.push(element.name)
+            this.lines.push(element.name);
           });
         }
       },
@@ -105,13 +112,12 @@ export class DowntimeComponent {
     if (this.isFormValid) {
       const startDate = this.searchForm.value.startDate;
       const endDate = this.searchForm.value.endDate;
-      const line =this.searchForm.value.line;
-      const shift=this.searchForm.value.shift;
+      const line = this.searchForm.value.line;
+      const shift = this.searchForm.value.shift;
       this.spinner.show();
-      this.consultaService.getLossesData(startDate, endDate,line,shift).subscribe(
+      this.consultaService.getLossesData(startDate, endDate, line, shift).subscribe(
         (data: any) => {
           this.spinner.hide();
-          //this.dataSource=new MatTableDataSource<any>;
           if (data.length === 0) {
             Swal.fire({
               title: "Lo sentimos",
@@ -119,10 +125,8 @@ export class DowntimeComponent {
               icon: "error"
             });
           } else {
-            console.log('El Data de Downtime es:',data)
-            //this.dataSource = new MatTableDataSource(data);
-            //this.dataSource.paginator = this.paginator;
-            //this.blnShowTable = true;
+            this.lossesData = data;
+            this.updateChartData();
           }
         },
         (error) => {
@@ -138,4 +142,27 @@ export class DowntimeComponent {
     }
   }
 
-}//Fin de la clase DownTimeComponet
+  private updateChartData(): void {
+    const exampleLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const exampleDataA = [10, 20, 30, 40, 50, 60, 70];
+    const exampleDataB = [15, 25, 35, 45, 55, 65, 75];
+
+    this.barChartData = {
+      labels: exampleLabels,
+      datasets: [
+        { data: exampleDataA, label: 'Series A' },
+        { data: exampleDataB, label: 'Series B' }
+      ]
+    };
+  }
+
+  public downloadChart(): void {
+    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+    if (canvas) {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'chart.png';
+      link.click();
+    }
+  }
+}

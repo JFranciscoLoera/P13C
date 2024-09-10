@@ -23,14 +23,21 @@
           <option *ngFor="let shift of shifts" [value]="shift">{{ shift }}</option>
         </select>
       </div>
-      <!-- El botón se muestra solo si el formulario es válido -->
       <button *ngIf="isFormValid" type="submit">Buscar</button>
-      <!-- Mensaje de error de fecha -->
       <div *ngIf="dateError" class="error-message">La fecha de inicio no puede ser posterior a la fecha de fin.</div>
     </div>
   </form>
 </div>
 
 
-<p>downtime works!</p>
 
+<div>
+  <div style="display: block;">
+    <canvas baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="'bar'">
+    </canvas>
+    <button (click)="downloadChart()">Download Chart</button>
+  </div>
+</div>
