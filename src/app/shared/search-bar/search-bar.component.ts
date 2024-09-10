@@ -49,7 +49,6 @@ export class SearchBarComponent implements OnInit {
         shift: this.searchForm.value.shift
       };
       this.searchParamsChanged.emit(params);
-      console.log('Formulario enviado');
     }
   }
 }

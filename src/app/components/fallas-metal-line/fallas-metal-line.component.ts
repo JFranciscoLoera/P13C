@@ -35,7 +35,6 @@ export class FallasMetalLineComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public isFormValid: boolean = false;
   public dateError: boolean = false;
-  public blnShowTable: boolean = false;
   public displayedColumns: string[] = ['id', 'shop_Name', 'failure_Date', 'failure_Shift', 'failure_No',
     'from_Time', 'to_Time', 'failure_Time', 'cause_No', 'comment_Data'];
   dataSource: MatTableDataSource<MetalLineFailureData> = new MatTableDataSource<any>;
@@ -117,7 +116,6 @@ export class FallasMetalLineComponent implements OnInit {
     if (this.isFormValid) {
       const startDate = this.searchForm.value.startDate;
       const endDate = this.searchForm.value.endDate;
-      this.blnShowTable = false;
       this.spinner.show();
       this.consultaService.getMetalLineFailureData(startDate, endDate).subscribe(
         (data: MetalLineFailureData[]) => {
@@ -132,7 +130,6 @@ export class FallasMetalLineComponent implements OnInit {
           } else {
             this.dataSource = new MatTableDataSource(data);
             this.dataSource.paginator = this.paginator;
-            this.blnShowTable = true;
           }
         },
         (error) => {
