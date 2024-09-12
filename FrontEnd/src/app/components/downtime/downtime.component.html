@@ -29,9 +29,7 @@
   </form>
 </div>
 
-
-
-<div>
+<div *ngIf="lossesResponse.tableData.length > 0">
   <div style="display: block;">
     <canvas baseChart
             [data]="barChartData"
@@ -41,3 +39,103 @@
     <button (click)="downloadChart()">Download Chart</button>
   </div>
 </div>
+
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.5)"
+  size="default"
+  color="#fff"
+  type="ball-spin"
+>
+  <div class="la-ball-atom la-3x">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</ngx-spinner>
+
+
+
+<!-- Tabla de Angular Material -->
+<mat-card [hidden]="dataSource.data.length <= 0">
+  <mat-card-content>
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- l_NAME Column -->
+        <ng-container matColumnDef="l_NAME">
+          <th mat-header-cell *matHeaderCellDef>Linea</th>
+          <td mat-cell *matCellDef="let element">{{element.l_NAME}}</td>
+        </ng-container>
+
+        <!-- shifT_NAME Column -->
+        <ng-container matColumnDef="shifT_NAME">
+          <th mat-header-cell *matHeaderCellDef>Turno</th>
+          <td mat-cell *matCellDef="let element">{{element.shifT_NAME}}</td>
+        </ng-container>
+
+        
+
+        <!-- o_NM Column -->
+        <ng-container matColumnDef="o_NM">
+          <th mat-header-cell *matHeaderCellDef>Error</th>
+          <td mat-cell *matCellDef="let element">{{element.o_NM}}</td>
+        </ng-container>
+
+       
+
+        <!-- s_TIM_S Column -->
+        <ng-container matColumnDef="s_TIM_S">
+          <th mat-header-cell *matHeaderCellDef>Tiempo De Paro (Segundos)</th>
+          <td mat-cell *matCellDef="let element">{{element.s_TIM_S}}</td>
+        </ng-container>
+
+        <!-- evenT_DATE Column -->
+        <ng-container matColumnDef="evenT_DATE">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let element">{{element.evenT_DATE | date}}</td>
+        </ng-container>
+
+        <!-- typE_LOSSES Column -->
+        <ng-container matColumnDef="typE_LOSSES">
+          <th mat-header-cell *matHeaderCellDef>Tipo De Perdida</th>
+          <td mat-cell *matCellDef="let element">{{element.typE_LOSSES}}</td>
+        </ng-container>
+
+        <!-- Header and Row Definition -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Contenedor para el paginador y el botón de descarga -->
+<div class="paginator-container" [hidden]="dataSource.data.length <= 0">
+  <button class="btn btn-dark" mat-button (click)="createXlsFile()">Descargar XLSX</button> <!-- Botón de descarga -->
+  <mat-paginator class="fixed" [pageSizeOptions]="[6, 12, 20, 30]" showFirstLastButtons></mat-paginator>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
