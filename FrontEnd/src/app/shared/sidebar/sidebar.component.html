@@ -1,0 +1,22 @@
+<p-sidebar [(visible)]="sidebarVisible" position="left" [baseZIndex]="10000">
+  <h4>Herramientas de Análisis
+    <div class="header-icons pt-3 pb-3">
+      <img src="assets/images/icon1.png" alt="Icon 1">
+      <img src="assets/images/icon2.png" alt="Icon 2">
+      <img src="assets/images/icon3.png" alt="Icon 3">
+      <img src="assets/images/icon4.png" alt="Icon 4">
+    </div>
+  </h4>
+  <ul class="sidebar-menu">
+      <li class="menu-item" (click)="navigateTo('/downtime')">Downtime</li>
+      <li class="menu-item" (click)="navigateTo('/grandes-perdidas')">Grandes de Pérdidas</li>
+      <li class="menu-item" (click)="navigateTo('/oee-jph')">OEE & JPH</li>
+      <li class="menu-item" (click)="navigateTo('/tiempo-ciclo-estacion')">Tiempo Ciclo por Estación</li>
+      <li class="menu-item" (click)="navigateTo('/tiempo-productivo')">Tiempo Productivo</li>
+      <li class="menu-item" (click)="navigateTo('/fallas-metal')">Fallas Metal Line</li>
+  </ul>
+</p-sidebar>
+
+<p-button (click)="sidebarVisible = true" class="custom-button">
+  <img src="assets/images/menu.png" width="30px" height="30px">
+</p-button>

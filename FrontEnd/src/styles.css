@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+/* Elimina el fondo y el borde predeterminado de todos los botones PrimeNG */
+.p-button {
+  background: transparent; /* Elimina el fondo */
+  border: none; /* Elimina el borde predeterminado */
+}
+
+/* Ajusta el color del ícono dentro de los botones */
+.p-button .p-button-icon {
+  color: black; /* Cambia el color del ícono si es necesario */
+}
+
+/* Elimina la sombra y el contorno en el enfoque */
+.p-button:focus, .p-button:active {
+  box-shadow: none; /* Elimina el efecto de sombra */
+  outline: none; /* Elimina el contorno de enfoque */
+}
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
