@@ -3,12 +3,12 @@ import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ConsultaService } from '../../services/consulta.service';
-import { NgxSpinnerService,NgxSpinnerModule} from 'ngx-spinner';
+import { NgxSpinnerService, NgxSpinnerModule } from 'ngx-spinner';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { LossesData } from '../../interfaces/losses-data';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartOptions, ChartTypeRegistry, ChartData } from 'chart.js';
+import { ChartOptions, ChartTypeRegistry, ChartData, ChartConfiguration, ChartType } from 'chart.js';
 import { Chart, registerables } from 'chart.js';
 import { LossesResponse } from '../../interfaces/losses-response';
 
@@ -25,8 +25,8 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-downtime',
   standalone: true,
-  imports: [SidebarComponent, SearchBarComponent, CommonModule, FormsModule, BaseChartDirective,NgxSpinnerModule,
-    MatTableModule,MatSort,MatSortModule,MatPaginator,MatPaginatorModule,MatCardModule
+  imports: [SidebarComponent, SearchBarComponent, CommonModule, FormsModule, BaseChartDirective, NgxSpinnerModule,
+    MatTableModule, MatSort, MatSortModule, MatPaginator, MatPaginatorModule, MatCardModule
   ],
   templateUrl: './downtime.component.html',
   styleUrls: ['./downtime.component.css']
@@ -56,14 +56,40 @@ export class DowntimeComponent {
   public barChartType: keyof ChartTypeRegistry = 'bar';
   dataSource: MatTableDataSource<LossesData> = new MatTableDataSource<any>;
   public displayedColumns: string[] = [
-    'l_NAME', 
-    'shifT_NAME', 
-    'o_NM', 
-    's_TIM_S', 
-    'evenT_DATE',  
+    'l_NAME',
+    'shifT_NAME',
+    'o_NM',
+    's_TIM_S',
+    'evenT_DATE',
     'typE_LOSSES'
   ];
-  
+
+  //Variables PIECHART
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+
+  // Configuración de la gráfica de pie
+  public pieChartOptions: ChartOptions<'pie'> = {
+    responsive: true,
+  };
+  public pieChartLabels: string[] = ['Item 1', 'Item 2', 'Item 3'];
+
+  // Cambia a ChartData<'pie'> para asegurar la correcta asignación de tipos
+  public pieChartData: ChartData<'pie'> = {
+    labels: this.pieChartLabels,
+    datasets: [
+      {
+        data: [300, 500, 100],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+      }
+    ]
+  };
+
+  public pieChartType: ChartType = 'pie';
+  //Fin de variables pieChart
+
+
+
 
   constructor(
     private consultaService: ConsultaService,
@@ -76,7 +102,7 @@ export class DowntimeComponent {
     this.searchForm.statusChanges?.subscribe(() => {
       this.checkFormValidity(this.searchForm);
     });
-    
+
   }
 
   checkFormValidity(form: NgForm): void {
@@ -139,7 +165,7 @@ export class DowntimeComponent {
       const shift = this.searchForm.value.shift;
       this.spinner.show();
       this.lossesResponse = { tableData: [] };
-      this.dataSource=new MatTableDataSource<any>;
+      this.dataSource = new MatTableDataSource<any>;
       this.consultaService.getLossesData(startDate, endDate, line, shift).subscribe(
         (data: any) => {
           this.spinner.hide();
@@ -151,7 +177,7 @@ export class DowntimeComponent {
             });
           } else {
             this.lossesResponse = data;
-            console.log('LossesResponse:',data)
+            console.log('LossesResponse:', data)
             this.dataSource = new MatTableDataSource(this.lossesResponse.tableData);
             this.dataSource.paginator = this.paginator;
             this.updateChartData(data);
@@ -170,59 +196,127 @@ export class DowntimeComponent {
     }
   }
 
-  private updateChartData(response:LossesResponse): void {
+  private updateChartData(response: LossesResponse): void {
     const exampleLabels = response.lossesLabel;
     const exampleDataA = response.lossesLabelTime;
-    //const exampleDataB = [15, 25, 35, 45, 55, 65, 75];
 
     this.barChartData = {
       labels: exampleLabels,
       datasets: [
-        { data: exampleDataA, label: 'DownTime (Segundos)' },
-      //  { data: exampleDataB, label: 'Series B' }
+        {
+          data: exampleDataA,
+          label: 'DownTime (Segundos)',
+          backgroundColor: [
+            '#e0e0e0', // Gris claro 1
+            '#c0c0c0', // Gris claro 2
+            '#a0a0a0', // Gris medio claro
+            '#808080', // Gris medio
+            '#606060', // Gris oscuro 1
+            '#404040', // Gris oscuro 2
+            '#202020'  // Gris muy oscuro
+          ],
+          borderColor: '#333', // Borde gris oscuro para todas las barras
+          borderWidth: 1
+        }
       ]
     };
+    this.updatePieChartData(response);
   }
 
-  public downloadChart(): void {
-    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+  // NUEVO: Función para actualizar el gráfico de pie
+  private updatePieChartData(response: LossesResponse): void {
+    const pieLabels = response.lossesLabel;
+    const pieData = response.lossesOccurrences.map(item => item.occurrences);
+
+    this.pieChartData = {
+      labels: pieLabels,
+      datasets: [
+        {
+          data: pieData,
+          backgroundColor: [
+            '#D3D3D3',
+            '#C0C0C0',
+            '#A9A9A9',
+            '#808080',
+            '#696969',
+            '#505050',
+            '#383838',
+            '#202020',
+            '#101010'
+          ],
+          hoverBackgroundColor: [
+            '#D3D3D3',
+            '#C0C0C0',
+            '#A9A9A9',
+            '#808080',
+            '#696969',
+            '#505050',
+            '#383838',
+            '#202020',
+            '#101010'
+          ]
+        }
+      ]
+    };
+
+    // Asegúrate de asignar las opciones aquí
+    this.pieChartOptions = {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Número De Incidencias',
+          font: {
+            size: 18
+          }
+        }
+      }
+    };
+}
+
+
+
+
+  public downloadChart(chartType: string): void {
+    const canvas = document.querySelector(`canvas[data-chart-type="${chartType}"]`) as HTMLCanvasElement;
     if (canvas) {
       const link = document.createElement('a');
       link.href = canvas.toDataURL('image/png');
-      link.download = 'chart.png';
+      link.download = `${chartType}-chart.png`;
       link.click();
     }
   }
+  
 
 
-public createXlsFile(): void {
+  public createXlsFile(): void {
     // Obtén la fecha y hora actual del sistema
-const now = new Date();
+    const now = new Date();
 
-// Formatea la fecha y hora como 'YYYY-MM-DD HH:MM:SS'
-const year = now.getFullYear();
-const month = String(now.getMonth() + 1).padStart(2, '0'); // Agregar 1 porque los meses son 0-indexados
-const day = String(now.getDate()).padStart(2, '0');
-const hours = String(now.getHours()).padStart(2, '0');
-const minutes = String(now.getMinutes()).padStart(2, '0');
-const seconds = String(now.getSeconds()).padStart(2, '0');
+    // Formatea la fecha y hora como 'YYYY-MM-DD HH:MM:SS'
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Agregar 1 porque los meses son 0-indexados
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
 
-const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-// Construye el nombre del archivo usando la fecha y hora
-const fileName = `Fallas Metal Line ${formattedDateTime}.xlsx`;
+    // Construye el nombre del archivo usando la fecha y hora
+    const fileName = `Fallas Metal Line ${formattedDateTime}.xlsx`;
 
-// Crear la hoja de Excel desde los datos
-const ws = XLSX.utils.json_to_sheet(this.dataSource.data);
+    // Crear la hoja de Excel desde los datos
+    const ws = XLSX.utils.json_to_sheet(this.dataSource.data);
 
-// Crear un nuevo libro de Excel
-const wb = XLSX.utils.book_new();
+    // Crear un nuevo libro de Excel
+    const wb = XLSX.utils.book_new();
 
-// Agregar la hoja al libro
-XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    // Agregar la hoja al libro
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-// Guardar el archivo de Excel
-XLSX.writeFile(wb, fileName);
-}
+    // Guardar el archivo de Excel
+    XLSX.writeFile(wb, fileName);
+  }
 
 }//Fin de la clase DownTime

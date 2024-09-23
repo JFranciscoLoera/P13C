@@ -29,16 +29,40 @@
   </form>
 </div>
 
-<div *ngIf="lossesResponse.tableData.length > 0">
-  <div style="display: block;">
-    <canvas baseChart
-            [data]="barChartData"
-            [options]="barChartOptions"
-            [type]="'bar'">
-    </canvas>
-    <button (click)="downloadChart()">Download Chart</button>
+
+
+<div class="d-flex bd-highlight pl-2 pr-2" *ngIf="lossesResponse.tableData.length > 0">
+  <div class="p-2 flex-fill bd-highlight">
+    <div class="chart-container">
+      <canvas baseChart
+      data-chart-type="bar"
+              [data]="barChartData"
+              [options]="barChartOptions"
+              [type]="'bar'">
+      </canvas>
+    </div>
+    <button class="btn btn-dark" mat-button (click)="downloadChart('bar')">Descargar Gráfico</button>
+  </div>
+
+  <div class="p-2 flex-fill bd-highlight">
+    <div class="chart-container">
+      <canvas baseChart
+      data-chart-type="pie"
+              [data]="pieChartData"
+              [labels]="pieChartLabels"
+              [options]="pieChartOptions"
+              [type]="'pie'">
+      </canvas>
+    </div>
+    <button class="btn btn-dark" mat-button (click)="downloadChart('pie')">Descargar Gráfico</button>
   </div>
 </div>
+
+
+
+
+
+
 
 <ngx-spinner
   bdColor="rgba(0,0,0,0.5)"
