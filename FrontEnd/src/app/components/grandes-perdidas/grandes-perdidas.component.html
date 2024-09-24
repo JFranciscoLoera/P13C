@@ -1,2 +1,12 @@
 <app-search-bar></app-search-bar>
-<p>grandes-perdidas works!</p>
+<div style="display: block;">
+    <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [legend]="true"
+            [type]="'line'">
+    </canvas>
+  </div>
+
+  

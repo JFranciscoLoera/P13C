@@ -58,6 +58,21 @@
   </div>
 </div>
 
+<div class="p-2 flex-fill bd-highlight" *ngIf="lossesResponse.tableData.length > 0">
+  <div class="chart-container">
+    <canvas baseChart
+            data-chart-type="line"
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [legend]="true"
+            [type]="'line'">
+    </canvas>
+  </div>
+  <button class="btn btn-dark" mat-button (click)="downloadChart('line')">Descargar Gráfico</button>
+</div>
+
+
 
 
 

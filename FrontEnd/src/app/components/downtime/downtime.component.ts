@@ -17,6 +17,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
 import * as XLSX from 'xlsx';
+import { DailyLoss } from '../../interfaces/dailyLosses';
 
 
 
@@ -37,7 +38,7 @@ export class DowntimeComponent {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public lines: string[] = ['Línea 1', 'Línea 2', 'Línea 3'];
-  shifts = ['Turno 1', 'Turno 2', 'Turno 3'];
+  shifts = ['Turno 1', 'Turno 2'];
   public isFormValid: boolean = false;
   public dateError: boolean = false;
   public lossesResponse: { tableData: any[] } = { tableData: [] };
@@ -88,6 +89,47 @@ export class DowntimeComponent {
   public pieChartType: ChartType = 'pie';
   //Fin de variables pieChart
 
+  //Variables Grafica de linea Perdida Diaria
+  public dailyLosses: DailyLoss[] = [
+    { lossDate: new Date("2024-09-02T00:00:00"), dailyLosses: 158 },
+    { lossDate: new Date("2024-09-05T00:00:00"), dailyLosses: 9 },
+  ];
+
+  chartData = [
+    {
+      data: this.dailyLosses.map(entry => entry.dailyLosses / 60), // Convertir a minutos
+      label: 'Pérdidas Diarias (minutos)',
+      backgroundColor: 'rgba(128, 128, 128, 0.2)', // Fondo gris claro
+      borderColor: 'rgba(128, 128, 128, 1)', // Línea gris oscuro
+      borderWidth: 2
+    }
+  ];
+
+  // Formatear las fechas para el eje X
+  chartLabels = this.dailyLosses.map(entry => {
+    const date = new Date(entry.lossDate);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Formato: DD/MM/YYYY
+  });
+
+  chartOptions = {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Pérdidas (minutos)'
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Fecha'
+        }
+      }
+    }
+  };
+  //Fin De Las Variables de Perdida Diaria
 
 
 
@@ -198,14 +240,14 @@ export class DowntimeComponent {
 
   private updateChartData(response: LossesResponse): void {
     const exampleLabels = response.lossesLabel;
-    const exampleDataA = response.lossesLabelTime;
-
+    const exampleDataA = response.lossesLabelTime.map(value => value / 60); // Convertir de segundos a minutos
+  
     this.barChartData = {
       labels: exampleLabels,
       datasets: [
         {
           data: exampleDataA,
-          label: 'DownTime (Segundos)',
+          label: 'DownTime (Minutos)', // Cambia el label a "Minutos"
           backgroundColor: [
             '#e0e0e0', // Gris claro 1
             '#c0c0c0', // Gris claro 2
@@ -220,8 +262,11 @@ export class DowntimeComponent {
         }
       ]
     };
+    
     this.updatePieChartData(response);
+    this.updateDailyLineChartData(response);
   }
+  
 
   // NUEVO: Función para actualizar el gráfico de pie
   private updatePieChartData(response: LossesResponse): void {
@@ -257,6 +302,7 @@ export class DowntimeComponent {
           ]
         }
       ]
+      
     };
 
     // Asegúrate de asignar las opciones aquí
@@ -275,7 +321,17 @@ export class DowntimeComponent {
 }
 
 
+updateDailyLineChartData(response: LossesResponse) {
+  //this.dailyLosses = newDailyLosses;
 
+  this.chartData[0].data = response.dailyLosses.map(entry => entry.dailyLosses / 60); // Convertir a minutos
+
+  // Actualizar las etiquetas del eje X
+  this.chartLabels = response.dailyLosses.map(entry => {
+    const date = new Date(entry.lossDate);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Formato: DD/MM/YYYY
+  });
+}
 
   public downloadChart(chartType: string): void {
     const canvas = document.querySelector(`canvas[data-chart-type="${chartType}"]`) as HTMLCanvasElement;
