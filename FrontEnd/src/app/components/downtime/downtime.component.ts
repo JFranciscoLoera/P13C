@@ -41,6 +41,7 @@ export class DowntimeComponent {
   shifts = ['Turno 1', 'Turno 2'];
   public isFormValid: boolean = false;
   public dateError: boolean = false;
+  
   public lossesResponse: { tableData: any[] } = { tableData: [] };
 
   public barChartOptions: ChartOptions<'bar'> = {

@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
-import { DailyLoss } from '../../interfaces/dailyLosses';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
-import { NgxSpinnerModule } from 'ngx-spinner';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import Swal from 'sweetalert2';
+import { ConsultaService } from '../../services/consulta.service';
 
 @Component({
   selector: 'app-grandes-perdidas',
@@ -21,56 +22,73 @@ import { MatTableModule } from '@angular/material/table';
 })
 export class GrandesPerdidasComponent {
 
-  public dailyLosses: DailyLoss[] = [
-    { lossDate: new Date("2024-09-02T00:00:00"), dailyLosses: 158 },
-    { lossDate: new Date("2024-09-05T00:00:00"), dailyLosses: 9 },
-    { lossDate: new Date("2024-09-09T00:00:00"), dailyLosses: 241 },
-    { lossDate: new Date("2024-09-11T00:00:00"), dailyLosses: 8 },
-    { lossDate: new Date("2024-09-12T00:00:00"), dailyLosses: 13 },
-    { lossDate: new Date("2024-09-16T00:00:00"), dailyLosses: 6 },
-    { lossDate: new Date("2024-09-18T00:00:00"), dailyLosses: 12 },
-    { lossDate: new Date("2024-09-19T00:00:00"), dailyLosses: 41 },
-    { lossDate: new Date("2024-09-21T00:00:00"), dailyLosses: 18 },
-    { lossDate: new Date("2024-09-22T00:00:00"), dailyLosses: 14 },
-    { lossDate: new Date("2024-09-23T00:00:00"), dailyLosses: 17 },
-    { lossDate: new Date("2024-09-24T00:00:00"), dailyLosses: 487 },
-    { lossDate: new Date("2024-09-26T00:00:00"), dailyLosses: 92 },
-    { lossDate: new Date("2024-09-28T00:00:00"), dailyLosses: 93 },
-    { lossDate: new Date("2024-09-30T00:00:00"), dailyLosses: 42 }
-  ];
+  public strDateMax: string = '';
+  @ViewChild('searchForm', { static: true }) searchForm!: NgForm;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  public lines: string[] = ['Línea 1', 'Línea 2', 'Línea 3'];
+  shifts = ['Turno 1', 'Turno 2'];
+  public isFormValid: boolean = false;
+  public dateError: boolean = false;
+  //Fin de variables para el formulario
 
-  chartData = [
-    {
-      data: this.dailyLosses.map(entry => entry.dailyLosses / 60), // Convertir a minutos
-      label: 'Pérdidas Diarias (minutos)',
-      backgroundColor: 'rgba(128, 128, 128, 0.2)', // Fondo gris claro
-      borderColor: 'rgba(128, 128, 128, 1)', // Línea gris oscuro
-      borderWidth: 2
-    }
-  ];
+  constructor(
+    private consultaService: ConsultaService,
+    private spinner: NgxSpinnerService
+  ) { }
 
-  // Formatear las fechas para el eje X
-  chartLabels = this.dailyLosses.map(entry => {
-    const date = new Date(entry.lossDate);
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`; // Formato: DD/MM/YYYY
-  });
+  ngOnInit(): void {
+    //this.getLineNames();
+    //this.setDateLimit();
+    this.searchForm.statusChanges?.subscribe(() => {
+      this.checkFormValidity(this.searchForm);
+    });
 
-  chartOptions = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Pérdidas (minutos)'
+  }
+
+  checkFormValidity(form: NgForm): void {
+    const formValue = form.value || {};
+    const startDate: string = formValue.startDate || '';
+    const endDate: string = formValue.endDate || '';
+
+    this.dateError = !!(startDate && endDate && new Date(startDate) > new Date(endDate));
+    const isValid = form.valid !== null ? form.valid : false;
+    this.isFormValid = isValid && !this.dateError;
+  }
+
+  onSubmit(): void {
+    if (this.isFormValid) {
+      const startDate = this.searchForm.value.startDate;
+      const endDate = this.searchForm.value.endDate;
+      const line = this.searchForm.value.line;
+      const shift = this.searchForm.value.shift;
+      this.spinner.show();
+      this.consultaService.getLossesData(startDate, endDate, line, shift).subscribe(
+        (data: any) => {
+          this.spinner.hide();
+          if (data.tableData.length === 0) {
+            Swal.fire({
+              title: "Lo sentimos",
+              text: "Sin resultados en el rango seleccionado",
+              icon: "error"
+            });
+          } else {
+
+          }
+        },
+        (error) => {
+          this.spinner.hide();
+          Swal.fire({
+            title: "Error en el servidor",
+            text: "Error al obtener respuesta perdidas del componente downtime",
+            icon: "error"
+          });
+          console.error('Error al obtener los datos:', error);
         }
-      },
-      x: {
-        title: {
-          display: true,
-          text: 'Fecha'
-        }
-      }
+      );
     }
-  };
-}
+  }
+
+
+
+}//Fin De La Calse

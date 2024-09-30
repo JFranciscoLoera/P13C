@@ -1,2 +1,40 @@
-<app-search-bar></app-search-bar>
-<p>tiempo-ciclo-estacion works!</p>
+<div class="search-bar-container">
+    <form (ngSubmit)="onSubmit()" #searchForm="ngForm" (ngModelChange)="checkFormValidity(searchForm)">
+            <div class="search-bar-form">
+                    <div>
+                            <label for="startDate">Fecha Inicio:</label>
+                            <input type="date" id="startDate" name="startDate" ngModel required />
+                    </div>
+                    <div>
+                            <label for="endDate">Fecha Fin:</label>
+                            <input type="date" id="endDate" name="endDate" ngModel required />
+                    </div>
+                    <div>
+                            <label for="line">Línea:</label>
+                            <select id="line" name="line" ngModel required>
+                                    <option value="" disabled selected>Seleccionar Línea</option>
+                                    <option *ngFor="let line of lines" [value]="line">{{ line }}</option>
+                            </select>
+                    </div>
+                    <div>
+                            <label for="shift">Turno:</label>
+                            <select id="shift" name="shift" ngModel required>
+                                    <option value="" disabled selected>Seleccionar Turno</option>
+                                    <option *ngFor="let shift of shifts" [value]="shift">{{ shift }}</option>
+                            </select>
+                    </div>
+                    <button *ngIf="isFormValid" type="submit">Buscar</button>
+                    <div *ngIf="dateError" class="error-message">La fecha de inicio no puede ser posterior a la
+                            fecha de fin.</div>
+            </div>
+    </form>
+</div>
+
+<ngx-spinner bdColor="rgba(0,0,0,0.5)" size="default" color="#fff" type="ball-spin">
+    <div class="la-ball-atom la-3x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+    </div>
+</ngx-spinner>
