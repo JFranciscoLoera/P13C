@@ -1,40 +1,159 @@
 <div class="search-bar-container">
-    <form (ngSubmit)="onSubmit()" #searchForm="ngForm" (ngModelChange)="checkFormValidity(searchForm)">
-            <div class="search-bar-form">
-                    <div>
-                            <label for="startDate">Fecha Inicio:</label>
-                            <input type="date" id="startDate" name="startDate" ngModel required />
-                    </div>
-                    <div>
-                            <label for="endDate">Fecha Fin:</label>
-                            <input type="date" id="endDate" name="endDate" ngModel required />
-                    </div>
-                    <div>
-                            <label for="line">Línea:</label>
-                            <select id="line" name="line" ngModel required>
-                                    <option value="" disabled selected>Seleccionar Línea</option>
-                                    <option *ngFor="let line of lines" [value]="line">{{ line }}</option>
-                            </select>
-                    </div>
-                    <div>
-                            <label for="shift">Turno:</label>
-                            <select id="shift" name="shift" ngModel required>
-                                    <option value="" disabled selected>Seleccionar Turno</option>
-                                    <option *ngFor="let shift of shifts" [value]="shift">{{ shift }}</option>
-                            </select>
-                    </div>
-                    <button *ngIf="isFormValid" type="submit">Buscar</button>
-                    <div *ngIf="dateError" class="error-message">La fecha de inicio no puede ser posterior a la
-                            fecha de fin.</div>
-            </div>
-    </form>
+        <h3>OEE & JPH</h3>
+        <form (ngSubmit)="onSubmit()" #searchForm="ngForm" (ngModelChange)="checkFormValidity(searchForm)">
+                <div class="search-bar-form">
+                        <div>
+                                <label for="startDate">Fecha Inicio:</label>
+                                <input type="date" id="startDate" name="startDate" ngModel required />
+                        </div>
+                        <div>
+                                <label for="endDate">Fecha Fin:</label>
+                                <input type="date" id="endDate" name="endDate" ngModel required />
+                        </div>
+                        <div>
+                                <label for="line">Línea:</label>
+                                <select id="line" name="line" ngModel required>
+                                        <option value="" disabled selected>Seleccionar Línea</option>
+                                        <option *ngFor="let line of lines" [value]="line">{{ line }}</option>
+                                </select>
+                        </div>
+                        <div>
+                                <label for="shift">Turno:</label>
+                                <select id="shift" name="shift" ngModel required>
+                                        <option value="" disabled selected>Seleccionar Turno</option>
+                                        <option *ngFor="let shift of shifts" [value]="shift">{{ shift }}</option>
+                                </select>
+                        </div>
+                        <button *ngIf="isFormValid" type="submit">Buscar</button>
+                        <div *ngIf="dateError" class="error-message">La fecha de inicio no puede ser posterior a la
+                                fecha de fin.</div>
+                </div>
+        </form>
 </div>
 
 <ngx-spinner bdColor="rgba(0,0,0,0.5)" size="default" color="#fff" type="ball-spin">
-    <div class="la-ball-atom la-3x">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-    </div>
+        <div class="la-ball-atom la-3x">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+        </div>
 </ngx-spinner>
+
+<!--Graficas en row-->
+<div class="d-flex bd-highlight pl-2 pr-2" *ngIf="OeeResponseResult && OeeResponseResult.tablaOeeResults && OeeResponseResult.tablaOeeResults.length > 0">
+        <div class="p-2 flex-fill bd-highlight">
+                <div class="chart-container">
+                        <canvas baseChart data-chart-type="bar" [data]="barChartData" [options]="barChartOptions"
+                                [type]="'bar'">
+                        </canvas>
+                </div>
+                <button class="btn btn-dark" mat-button (click)="downloadChart('bar')">Descargar Gráfico</button>
+        </div>
+
+        <div class="p-2 flex-fill bd-highlight">
+                <div class="chart-container">
+                        <canvas baseChart data-chart-type="pie" [data]="pieChartData" [labels]="pieChartLabels"
+                                [options]="pieChartOptions" [type]="'pie'">
+                        </canvas>
+                </div>
+                <button class="btn btn-dark" mat-button (click)="downloadChart('pie')">Descargar Gráfico</button>
+        </div>
+</div>
+
+<!---->
+<!--Fin de graficas en row-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Tabla de Angular Material -->
+<mat-card [hidden]="dataSource.data.length <= 0">
+        <mat-card-content>
+                <div class="mat-elevation-z8">
+                        <table mat-table [dataSource]="dataSource" matSort>
+
+                                <!-- SHIFT_CD Column -->
+                                <ng-container matColumnDef="SHIFT_CD">
+                                        <th mat-header-cell *matHeaderCellDef>Turno</th>
+                                        <td mat-cell *matCellDef="let element">{{element.shifT_CD}}</td>
+                                </ng-container>
+
+                                <!-- LINE_NAME Column -->
+                                <ng-container matColumnDef="LINE_NAME">
+                                        <th mat-header-cell *matHeaderCellDef>Linea</th>
+                                        <td mat-cell *matCellDef="let element">{{element.linE_NAME}}</td>
+                                </ng-container>
+
+                                <!-- STATION_NAME Column -->
+                                <ng-container matColumnDef="STATION_NAME">
+                                        <th mat-header-cell *matHeaderCellDef>Estación</th>
+                                        <td mat-cell *matCellDef="let element">{{element.statioN_NAME}}</td>
+                                </ng-container>
+
+                                <!-- HOUR_JPH Column -->
+                                <ng-container matColumnDef="HOUR_JPH">
+                                        <th mat-header-cell *matHeaderCellDef>Hora JPH</th>
+                                        <td mat-cell *matCellDef="let element">{{element.houR_JPH}}</td>
+                                </ng-container>
+
+                                <!-- COUNT_ST Column -->
+                                <ng-container matColumnDef="COUNT_ST">
+                                        <th mat-header-cell *matHeaderCellDef>Conteo</th>
+                                        <td mat-cell *matCellDef="let element">{{element.counT_ST}}</td>
+                                </ng-container>
+
+                                <!-- AVG_TC Column -->
+                                <ng-container matColumnDef="AVG_TC">
+                                        <th mat-header-cell *matHeaderCellDef>Promedio TC</th>
+                                        <td mat-cell *matCellDef="let element">{{element.avG_TC}}</td>
+                                </ng-container>
+
+                                <!-- MODEL Column -->
+                                <ng-container matColumnDef="MODEL">
+                                        <th mat-header-cell *matHeaderCellDef>Modelo</th>
+                                        <td mat-cell *matCellDef="let element">{{element.model}}</td>
+                                </ng-container>
+
+                                <!-- DATE_ST Column -->
+                                <ng-container matColumnDef="DATE_ST">
+                                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                                        <td mat-cell *matCellDef="let element">{{element.datE_ST | date}}</td>
+                                </ng-container>
+
+                                <!-- UPDATETIME Column -->
+                                <ng-container matColumnDef="UPDATETIME">
+                                        <th mat-header-cell *matHeaderCellDef>Hora de Actualización</th>
+                                        <td mat-cell *matCellDef="let element">{{element.updatetime | date: 'short'}}
+                                        </td>
+                                </ng-container>
+
+
+                                <!-- Header and Row Definition -->
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                </div>
+        </mat-card-content>
+</mat-card>
+
+<!-- Contenedor para el paginador y el botón de descarga -->
+<div class="paginator-container" [hidden]="dataSource.data.length <= 0">
+        <button class="btn btn-dark" mat-button (click)="createXlsFile()">Descargar XLSX</button>
+        <!-- Botón de descarga -->
+        <mat-paginator class="fixed" [pageSizeOptions]="[6, 12, 20, 30]" showFirstLastButtons></mat-paginator>
+</div>

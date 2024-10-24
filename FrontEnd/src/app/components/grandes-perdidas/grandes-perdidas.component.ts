@@ -38,12 +38,42 @@ export class GrandesPerdidasComponent {
   ) { }
 
   ngOnInit(): void {
-    //this.getLineNames();
+    this.getLineNames();
     //this.setDateLimit();
     this.searchForm.statusChanges?.subscribe(() => {
       this.checkFormValidity(this.searchForm);
     });
 
+  }
+
+  public getLineNames(): void {
+    this.spinner.show();
+    this.consultaService.getLinesName().subscribe(
+      (data: any) => {
+        this.spinner.hide();
+        if (data.length === 0) {
+          Swal.fire({
+            title: "Lo sentimos",
+            text: "Sin resultados en nombres de lineas",
+            icon: "error"
+          });
+        } else {
+          this.lines = [];
+          data.forEach((element: any) => {
+            this.lines.push(element.name);
+          });
+        }
+      },
+      (error) => {
+        this.spinner.hide();
+        Swal.fire({
+          title: "Error en el servidor",
+          text: "Error al obtener nombres de lineas",
+          icon: "error"
+        });
+        console.error('Error al obtener los datos:', error);
+      }
+    );
   }
 
   checkFormValidity(form: NgForm): void {
@@ -63,7 +93,7 @@ export class GrandesPerdidasComponent {
       const line = this.searchForm.value.line;
       const shift = this.searchForm.value.shift;
       this.spinner.show();
-      this.consultaService.getLossesData(startDate, endDate, line, shift).subscribe(
+      this.consultaService.getGrandesPerdidas(startDate, endDate, line, shift).subscribe(
         (data: any) => {
           this.spinner.hide();
           if (data.tableData.length === 0) {

@@ -50,6 +50,32 @@ export class ConsultaService {
     return this.http.get<LossesResponse>(`${this.apiUrl}getLossesData`, { params });
   }
 
+  // Método para obtener el JPH y OEE
+  getJPHOEE(startDate: Date, endDate: Date,line:string,shift:string): Observable<LossesResponse> {
+    // Construir los parámetros de la consulta
+    let params = new HttpParams()
+      .set('startDate', startDate.toString()) // Formato yyyy-MM-dd
+      .set('endDate', endDate.toString())
+      .set('line', line.toString())
+      .set('shift', shift.toString());   // Formato yyyy-MM-dd
+
+    // Realizar la solicitud GET a la API
+    return this.http.get<LossesResponse>(`${this.apiUrl}getJPHOEE`, { params });
+  }
+
+  // Método para obtener el JPH y OEE
+  getGrandesPerdidas(startDate: Date, endDate: Date,line:string,shift:string): Observable<LossesResponse> {
+    // Construir los parámetros de la consulta
+    let params = new HttpParams()
+      .set('startDate', startDate.toString()) // Formato yyyy-MM-dd
+      .set('endDate', endDate.toString())
+      .set('line', line.toString())
+      .set('shift', shift.toString());   // Formato yyyy-MM-dd
+
+    // Realizar la solicitud GET a la API
+    return this.http.get<LossesResponse>(`${this.apiUrl}getGrandesPerdidas`, { params });
+  }
+
 
 
 }
